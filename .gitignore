@@ -365,9 +365,6 @@ MigrationBackup/
 # Exclude packaged modules
 *.zip
 
-# Exclude .NET assemblies from source
-*.dll
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
