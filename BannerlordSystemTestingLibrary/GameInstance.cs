@@ -14,6 +14,7 @@ namespace BannerlordSystemTestingLibrary
         GameProcess process;
 
         public event Action<string> OnGameStateChanged;
+        public event Action<string> OnCommandResponse;
         public bool Running => process.Running;
         public int PID => process.GetPID();
         
@@ -68,11 +69,23 @@ namespace BannerlordSystemTestingLibrary
             }
         }
 
+        public void SendCommand(string command, string[] args)
+        {
+            if (attached)
+            {
+                PIDMsg.ReplyLine($"COMMAND {command}%\"{string.Join("%\"", args)}%\"");
+            }
+        }
+
         public void ProcessMessage(Message e)
         {
             if (e.MessageString.StartsWith("GAME_STATE "))
             {
                 ParseGameState(e);
+            }
+            else if (e.MessageString.StartsWith("COMMAND_RETURN "))
+            {
+                ParseCommandReturn(e);
             }
         }
 
@@ -83,6 +96,14 @@ namespace BannerlordSystemTestingLibrary
 
             OnGameStateChanged?.Invoke(gameState);
         }
+
+        private void ParseCommandReturn(Message e)
+        {
+            string returnParam = e.MessageString.Remove(0, "COMMAND_RETURN ".Length);
+
+            OnCommandResponse?.Invoke(returnParam);
+        }
+
         private Message _PIDMsg;
         private bool attached => _PIDMsg != null;
         #endregion

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleTCP;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -81,7 +82,7 @@ namespace ModTestingFramework
             TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>(false);
 
             // Create ACK Handler
-            MessageReceivedDelegate ACK_Handler = (sender, msg) =>
+            EventHandler<Message> ACK_Handler = (sender, msg) =>
             {
                 if (msg.MessageString == $"REGISTERED {command}")
                 {

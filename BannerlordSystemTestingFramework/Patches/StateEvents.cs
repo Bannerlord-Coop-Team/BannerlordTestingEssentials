@@ -7,6 +7,7 @@ namespace ModTestingFramework
 {
     class StateEvents
     {
+
         public static event Action<string> OnStateActivate;
         public static event Action OnMainMenuReady;
 
@@ -28,7 +29,7 @@ namespace ModTestingFramework
         {
             static void Postfix()
             {
-                if (MBMusicManager.Current != null)
+                if (!MainMenuReady && MBMusicManager.Current != null)
                 {
                     MainMenuReady = true;
                     OnMainMenuReady?.Invoke();

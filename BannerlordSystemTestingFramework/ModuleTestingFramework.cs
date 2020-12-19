@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using TaleWorlds.MountAndBlade;
 
 namespace ModTestingFramework
 {
@@ -11,6 +12,8 @@ namespace ModTestingFramework
     {
         public TestingFramework()
         {
+            Harmony harmony = new Harmony("com.TaleWorlds.MountAndBlade.Bannerlord.TestEnv");
+
             if (communicator.Connected)
             {
                 communicator.SendData($"PID {Process.GetCurrentProcess().Id}");
@@ -19,10 +22,15 @@ namespace ModTestingFramework
                 CommandRegistry.RegisterAllCommands();
 
                 StateEvents.OnStateActivate += (state) => { communicator.SendData($"GAME_STATE {state}"); };
+
+                // Remove patch after main menu becomes selectable
+                StateEvents.OnMainMenuReady += () => { 
+                    harmony.Unpatch(typeof(MBInitialScreenBase)
+                        .GetMethod("OnFrameTick", BindingFlags.NonPublic | BindingFlags.Instance), 
+                        HarmonyPatchType.Postfix); };
                 StateEvents.OnMainMenuReady += () => { communicator.SendData($"GAME_STATE MainMenuReady"); };
             }
-
-            Harmony harmony = new Harmony("com.TaleWorlds.MountAndBlade.Bannerlord.TestEnv");
+            
             harmony.PatchAll();
         }
 
@@ -38,15 +46,16 @@ namespace ModTestingFramework
         {
             if(msg.MessageString.StartsWith("COMMAND "))
             {
-                ParseCommandAndActivate(msg.MessageString);
+                ParseCommandAndActivate(msg);
             }
         }
 
-        private void ParseCommandAndActivate(string msg)
+        private void ParseCommandAndActivate(Message message)
         {
+            string msg = message.MessageString;
             // COMMAND StartGame [args]
             string formattedMsg = msg.Remove(0, "COMMAND ".Length);
-            string[] splitArray = formattedMsg.Split(' ');
+            string[] splitArray = formattedMsg.Split(new string[] { "%\"" }, StringSplitOptions.RemoveEmptyEntries);
             string[] args = splitArray.Skip(1).ToArray();
             string command = splitArray.First();
 
@@ -57,18 +66,26 @@ namespace ModTestingFramework
 
             MethodInfo methodInfo = CommandRegistry.commands[command];
 
-            if(methodInfo.GetParameters().Length == 0)
+            object returnParam;
+
+            if (methodInfo.GetParameters().Length == 0)
             {
-                methodInfo.Invoke(null, null);
+                returnParam = methodInfo.Invoke(null, null);
             }
             else if(methodInfo.GetParameters().Length == 1 &&
                 methodInfo.GetParameters()[0].ParameterType == typeof(string[]))
             {
-                methodInfo.Invoke(null, new object[] { args });
+                returnParam = methodInfo.Invoke(null, new object[] { args });
             }
             else
             {
                 throw new Exception($"{methodInfo.Name} does not meet generic requirements.");
+            }
+
+            if (returnParam != null &&
+                returnParam?.GetType() == typeof(string))
+            {
+                message.ReplyLine($"COMMAND_RETURN {returnParam}");
             }
         }
 

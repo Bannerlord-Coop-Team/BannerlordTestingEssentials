@@ -46,6 +46,11 @@ namespace BannerlordSystemTestingLibrary
             process = Process.Start(pInfo);
             process.Exited += (sender, e) => { Running = false; };
 
+            while(process.MainWindowHandle == new IntPtr(0)) 
+            { 
+                Task.Delay(100);
+            }
+
             if (process.MainWindowTitle == "Safe Mode")
             {
                 SetForegroundWindow(process.MainWindowHandle);

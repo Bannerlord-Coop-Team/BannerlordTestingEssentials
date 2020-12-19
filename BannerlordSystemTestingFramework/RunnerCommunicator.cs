@@ -19,9 +19,7 @@ namespace ModTestingFramework
 
         public readonly TimeSpan ACK_TIMEOUT = TimeSpan.FromSeconds(5);
 
-        public delegate void MessageReceivedDelegate(object sender, Message message);
-
-        public event MessageReceivedDelegate OnMessageReceived;
+        public event EventHandler<Message> OnMessageReceived;
         public event Action<string> OnMessageSent;
 
         public bool Connected => SocketClient.TcpClient.Connected;
