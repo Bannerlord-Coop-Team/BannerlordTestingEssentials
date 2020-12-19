@@ -13,7 +13,7 @@ namespace ModTestingFramework
         {
         }
     }
-    abstract class TestCommands
+    public abstract class TestCommands
     {
         protected static Dictionary<string, MethodInfo> commands = new Dictionary<string, MethodInfo>();
     }
