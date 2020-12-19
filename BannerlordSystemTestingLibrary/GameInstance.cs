@@ -13,6 +13,8 @@ namespace BannerlordSystemTestingLibrary
     {
         GameProcess process;
 
+        public string CurrentGameState { get; private set; }
+
         public event Action<string> OnGameStateChanged;
         public event Action<string> OnCommandResponse;
         public bool Running => process.Running;
@@ -93,6 +95,8 @@ namespace BannerlordSystemTestingLibrary
         private void ParseGameState(Message e)
         {
             string gameState = e.MessageString.Remove(0, "GAME_STATE ".Length);
+
+            CurrentGameState = gameState;
 
             OnGameStateChanged?.Invoke(gameState);
         }

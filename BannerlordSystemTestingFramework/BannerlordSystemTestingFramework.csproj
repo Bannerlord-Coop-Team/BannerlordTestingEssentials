@@ -118,6 +118,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="TaleWorlds.Core">
       <HintPath>..\..\..\mb2\bin\Win64_Shipping_Client\TaleWorlds.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="TaleWorlds.MountAndBlade">
       <HintPath>..\..\..\mb2\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
