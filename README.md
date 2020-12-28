@@ -1,5 +1,4 @@
 # BannerlordTestingEssentials
-## Introduction
 Bannerlord Testing Essentials is a Mount & Blade II: Bannerlord mod testing utility.
 
 **Features**
