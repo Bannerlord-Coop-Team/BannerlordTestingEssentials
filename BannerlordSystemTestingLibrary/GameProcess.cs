@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -154,7 +155,10 @@ namespace BannerlordSystemTestingLibrary
         // that are found, and process the files they contain.
         public string ProcessDirectory(string targetDirectory, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
+            // Drives with non-Windows filesystem can be obtained via directory listings, but are not actually accessible.
+            // Directory.Exists can filter those out.
+            if (cancellationToken.IsCancellationRequested || 
+                !Directory.Exists(targetDirectory)) 
             {
                 return null;
             }
