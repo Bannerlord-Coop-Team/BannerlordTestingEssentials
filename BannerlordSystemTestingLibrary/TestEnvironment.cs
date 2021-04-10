@@ -55,8 +55,11 @@ namespace BannerlordSystemTestingLibrary
             }
             else if (e.MessageString.StartsWith("REGISTRATION_COMPLETE")) 
             {
-                GameInstance instance = instances.Find((i) =>
-                    i.PIDMsg.TcpClient.Client.RemoteEndPoint == e.TcpClient.Client.RemoteEndPoint);
+                GameInstance instance = instances.AsParallel().SingleOrDefault(i =>
+                {
+                    return i.Attached &&
+                           i.PIDMsg.TcpClient.Client.RemoteEndPoint == e.TcpClient.Client.RemoteEndPoint;
+                });
                 OnRegistrationFinished?.Invoke(instance);
             }
             else if (e.MessageString.StartsWith("PID "))

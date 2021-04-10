@@ -10,7 +10,7 @@ namespace BannerlordSystemTestingLibrary
     {
         // Commonly used
         public static readonly string MainMenuReadyState = "MainMenuReady";
-        public static readonly string CharacterCreationState = "StoryMode.CharacterCreationSystem.CharacterCreationState";
+        public static readonly string CharacterCreationState = "TaleWorlds.CampaignSystem.CharacterCreationContent.CharacterCreationState";
 
 
         public static readonly string InitialState = "TaleWorlds.MountAndBlade.InitialState";

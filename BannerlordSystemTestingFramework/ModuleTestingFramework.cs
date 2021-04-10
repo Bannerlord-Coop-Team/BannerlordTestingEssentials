@@ -16,8 +16,8 @@ namespace ModTestingFramework
 
             if (communicator.Connected)
             {
-                communicator.SendData($"PID {Process.GetCurrentProcess().Id}");
                 communicator.OnMessageReceived += Communicator_OnMessageReceived;
+                communicator.SendData($"PID {Process.GetCurrentProcess().Id}");
                 
                 CommandRegistry.RegisterAllCommands();
 
