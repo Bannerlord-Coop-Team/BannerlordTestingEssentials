@@ -19,7 +19,8 @@ namespace BannerlordSystemTestingLibrary
         public event Action<string> OnCommandResponse;
         public bool Running => process.Running;
         public int PID => process.GetPID();
-        
+        public bool Attached => _PIDMsg != null;
+
         public Message PIDMsg
         {
             get { return _PIDMsg; } 
@@ -65,7 +66,7 @@ namespace BannerlordSystemTestingLibrary
 
         public void SendCommand(string command)
         {
-            if (attached)
+            if (Attached)
             {
                 PIDMsg.ReplyLine($"COMMAND {command}");
             }
@@ -73,7 +74,7 @@ namespace BannerlordSystemTestingLibrary
 
         public void SendCommand(string command, string[] args)
         {
-            if (attached)
+            if (Attached)
             {
                 PIDMsg.ReplyLine($"COMMAND {command}%\"{string.Join("%\"", args)}%\"");
             }
@@ -109,7 +110,6 @@ namespace BannerlordSystemTestingLibrary
         }
 
         private Message _PIDMsg;
-        private bool attached => _PIDMsg != null;
         #endregion
     }
 }
