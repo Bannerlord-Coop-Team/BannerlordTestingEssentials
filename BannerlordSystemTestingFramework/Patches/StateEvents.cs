@@ -5,7 +5,7 @@ using TaleWorlds.MountAndBlade;
 
 namespace ModTestingFramework
 {
-    class StateEvents
+    public class StateEvents
     {
 
         public static event Action<string> OnStateActivate;
